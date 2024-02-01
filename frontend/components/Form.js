@@ -30,32 +30,36 @@ export default function Form() {
 
   const validate = (name, value) => {
     yup.reach(formSchema, name).validate(value)
-      .then(() => setErrors({ ...errors, [name]: ''}))
-      .catch(err => setErrors({ ...errors, [name]: err.errors[0] }));
+      .then(() => setErrors(prev => ({ ...prev, [name]: ''})))
+      .catch(err => setErrors(prev => ({ ...prev, [name]: err.errors[0] })));
   };
 
   const handleChange = e => {
     const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
+    const toValidateValue = type === 'checkbox' ? formData.topping : value;
 
     if (type === 'checkbox') {
       const newToppings = checked
           ? [...formData.toppings, value]
           : formData.toppings.filter(topping => topping !== value);
 
-      setFormData({ ...formData, toppings: newToppings });
+      setFormData(prev => ({ ...prev, toppings: newToppings }));
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
 
-    validate(name, value);
+    validate(name, toValidateValue);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:9009/api/order', formData);
-      setResponseMessage(response.data);
+      setResponseMessage(response.data.message);
+      setFormData({ fullName: '', size: '', toppings: [] });
     } catch (error) {
+      console.error('Submission error', error);
       setResponseMessage('Something went wrong');
     }
   };
@@ -63,7 +67,7 @@ export default function Form() {
   return (
     <form onSubmit={handleSubmit}>
       <h2>Order Your Pizza</h2>
-      {responseMessage && <div className={responseMessage === 'Something went wrong' ? 'failure' : 'success'}>{responseMessage}</div>}
+      {responseMessage && <div className={responseMessage.includes('wrong') ? 'failure' : 'success'}>{responseMessage}</div>}
 
       <div className="input-group">
         <label htmlFor="fullName">Full Name</label><br />
@@ -79,7 +83,7 @@ export default function Form() {
 
       <div className="input-group">
         <label htmlFor="size">Size</label><br />
-        <select id="size" name="size" onChange={handleChange}>
+        <select id="size" name="size" value={formData.size} onChange={handleChange}>
           <option value="">----Choose Size----</option>
           <option value="S">S</option>
           <option value="M">M</option>
@@ -95,6 +99,7 @@ export default function Form() {
             name="toppings"
             type="checkbox"
             value={topping.topping_id}
+            checked={formData.toppings.includes(topping.topping_id)}
             onChange={handleChange}
             />
             {topping.text}<br />
@@ -102,7 +107,7 @@ export default function Form() {
         ))}
       </div>
       <input type="submit" 
-      disabled={Object.keys(errors).some(key => errors[key] !== '')} 
+      disabled={Object.keys(errors).some(key => errors[key] !== '') || !formData.fullName || !formData.size}
       />
     </form>
   );
