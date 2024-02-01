@@ -3,7 +3,61 @@ import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 describe('Sprint 7 Challenge Learner Tests', () => {
-  /*
+
+  describe('sum function', () => {
+    test('throws error when one of the arguments is not a number', () => {
+      expect(() => sum()).toThrow('pass valid numbers');
+    });
+
+    test('throws error when one of the arguments is not a number', () => {
+      expect(() => sum(2, 'seven')).toThrow('pass valid numbers');
+    });
+
+    test('correctly adds two numbers', () => {
+      expect(sum(1, 3)).toBe(4);
+    });
+
+    test('correctly adds string numbers', () => {
+      expect(sum('1', 2)).toBe(3);
+      expect(sum('10', '3')).toBe(13);
+    });
+  });
+
+  describe('HelloWorld component', () => {
+    test('renders a link that reads "Home"', () => {
+      render(<HelloWorld />);
+      const homeLink = screen.queryByText('Home');
+      expect(homeLink).toBeInTheDocument();
+    });
+
+    test('renders a link that reads "About"', () => {
+      render(<HelloWorld />);
+      const aboutLink = screen.queryByText('About');
+      expect(aboutLink).toBeInTheDocument();
+    });
+
+    test('renders a link that reads "Blog"', () => {
+      render(<HelloWorld />);
+      const blogLink = screen.queryByText('Blog');
+      expect(blogLink).toBeInTheDocument();
+    });
+
+    test('renders a text that reads "The Truth"', () => {
+      render(<HelloWorld />);
+      const truthText = screen.queryByText('The Truth');
+      expect(truthText).toBeInTheDocument();
+    });
+
+    test('renders a text that reads "JavaScript is pretty awesome"', () => {
+      render(<HelloWorld />);
+      const jsText = screen.queryByText('JavaScript is pretty awesome', { exact: false });
+      expect(jsText).toBeInTheDocument();
+    });
+  });
+});
+/*
+describe('Sprint 7 Challenge Learner Tests', () => {
+  
   👉 TASK 1 - Unit Testing of sum function at the bottom of this module
 
   Test the following. You can create separate tests or a single test with multiple assertions.
@@ -29,10 +83,12 @@ describe('Sprint 7 Challenge Learner Tests', () => {
     [5] renders a text that reads "JavaScript is pretty awesome"
     [6] renders a text that includes "javaScript is pretty" (use exact = false)
   */
+ /*
   test('you can comment out this test', () => {
     expect(true).toBe(false)
   })
 })
+*/
 
 function sum(a, b) {
   a = Number(a)
